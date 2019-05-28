@@ -1,0 +1,5 @@
+features: {'Caused': 50, 'Rice': 50, 'Genocide': 50, 'owlnet': 46, 'Semitic': 21, 'scri': 44, 'certainty': 37, 'Theism': 2}
+
+set the number of important features to 6
+explain the text with label=0 (the predicted label from the fitted MultinomialNB model)
+

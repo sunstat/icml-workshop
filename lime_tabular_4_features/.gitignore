@@ -1,0 +1,6 @@
+*.xml
+*.iml
+.idea
+.vscode/settings.json
+*.zip
+*.pyc

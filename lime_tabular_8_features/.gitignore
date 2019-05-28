@@ -1,0 +1,13 @@
+*.xml
+*.iml
+.idea
+*.pyc
+*.pyc
+*.pyc
+__pycache__/simulation.cpython-37.pyc
+__pycache__/decision_tree_label.cpython-37.pyc
+__pycache__/decision_tree_label.cpython-37.pyc
+*.pyc
+*.zip
+.vscode/settings.json
+*.json
