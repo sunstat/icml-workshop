@@ -115,7 +115,7 @@ def lime_app(train_X, train_y, test_X, test_y, black_pred_train_y, black_pred_te
 
 
 
-def test_generate_data():
+def test_generate_data(model):
 
     '''
     :param blackbox_model: 0 if RandomForest 1 if gradient boosting
@@ -124,16 +124,16 @@ def test_generate_data():
 
     #coefs = [[1,1,0,0], [0,1,1,0], [0,0,1,1], [1,0,0,1]]
     coefs = [[1, 1, 1, 0, 0, 0, 0, 0], [0, 1, 1, 1, 0, 0, 0, 0], [0, 0, 1, 1, 1, 0, 0, 0], [0, 0, 0, 1, 1, 1, 0, 0], [0, 0, 0, 0, 1, 1, 1, 0], [0, 0, 0, 0, 0, 1, 1, 1]]
-    pickle_path_model = os.path.join(os.getcwd()+'blackbox_trained_results_8features_100K_gbt_2.pickle')
-    pickle_path_data =  os.path.join(os.getcwd()+'data_8features_100K_2.pickle')
+    pickle_path_model = os.path.join('lime_tabular_8_features/pickle/blackbox_{}_trained_results_8features_100K.pickle'.format('RF' if 0==model else 'GBT'))
+    pickle_path_data =  os.path.join('lime_tabular_8_features/pickle/data_8features.pickle')
     print(pickle_path_data)
     # decision tree
     dtree = DecisionTree([(0, 0.5), (1, 0.5), 0, None, None, (0, 0), 1, None, None, 2, None, None, (2, -0.5), (0, 0.8), 3, None, None, 4, None, None, 5, None, None])
     
     try:
         print('load data from pickle file')
-        black_model = pickle.load(open(pickle_path_model,'rb'))
         data = pickle.load(open(pickle_path_data, 'rb'))
+        black_model = pickle.load(open(pickle_path_model,'rb'))
 
         train_X = data['train_X']
         train_y = data['train_y']
@@ -146,7 +146,7 @@ def test_generate_data():
     except:
         print('no pickle file found, generating data instead')
         train_X, train_y, test_X, test_y = generate_data(100000, 8, coefs, determine_region_3d, dtree)
-        black_model = fit_blackmodel(train_X, train_y, test_X, test_y,1)
+        black_model = fit_blackmodel(train_X, train_y, test_X, test_y, model)
         f = open(pickle_path_model ,'wb')
         pickle.dump(black_model,f)
 
@@ -166,5 +166,5 @@ def test_generate_data():
 
 if __name__ == "__main__":
 
-    test_generate_data()
+    test_generate_data(1)
 

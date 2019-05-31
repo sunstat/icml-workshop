@@ -88,20 +88,22 @@ def lime_app(train_X, train_y, test_X, test_y, black_pred_train_y, black_pred_te
     exp.available_labels()
     exp.local_exp.keys()
     
-def test_generate_data():
+def test_generate_data(model):
     '''
     :param blackbox_model: 0 if RandomForest 1 if gradient boosting
     :return:
     '''    
-    coefs = [[1,1,0,0], [0,1,1,0], [0,0,1,1], [1,0,0,1]]
-    pickle_path_model = os.path.join(os.getcwd()+'blackbox_trained_resutls.pickle')
+    coefs = [[1, 1, 1, 0, 0, 0, 0, 0], [0, 1, 1, 1, 0, 0, 0, 0], [0, 0, 1, 1, 1, 0, 0, 0],
+             [0, 0, 0, 1, 1, 1, 0, 0], [0, 0, 0, 0, 1, 1, 1, 0], [0, 0, 0, 0, 0, 1, 1, 1]]
+    #coefs = [[1,1,0,0], [0,1,1,0], [0,0,1,1], [1,0,0,1]]
+    pickle_path_model = os.path.join(os.getcwd()+'blackbox_{}_trained_resutls.pickle'.format('RF' if 0==model else 'GBT'))
     pickle_path_data =  os.path.join(os.getcwd()+'data.pickle')
     try:
         black_model = pickle.load(open(pickle_path ,'rb'))
         train_X, train_y, train_X, train_y, black_pred_train_y, black_pred_test_y = data.train_X, data.train_y, data.test_X, data.test_y, data.black_pred_train_y, data.black_pred_test_y;
     except:
-        train_X, train_y, test_X, test_y = generate_data(500, 4, coefs)
-        black_model = fit_blackmodel(train_X, train_y, test_X, test_y,0)
+        train_X, train_y, test_X, test_y = generate_data(5000, 8, coefs)
+        black_model = fit_blackmodel(train_X, train_y, test_X, test_y, model=model)
         f = open(pickle_path_model ,'w')
         pickle.dump(black_model,f)
         f.close()

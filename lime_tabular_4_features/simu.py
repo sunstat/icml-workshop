@@ -42,7 +42,7 @@ def generate_data(sample_size, feature_size, coefs):
         #print coefs[determine_region(x)]
         #print sum(x*coefs[determine_region(x)])
         #print bool(sum(x*coefs[determine_region(x)])>=0)
-        y = np.append(y,int(sum(x*coefs[determine_region(x)])>=0));
+        y = np.append(y,int(sum(x*coefs[determine_region(x)])>=0))
         #print y;
     train_X,  test_X, train_y, test_y = sklearn.model_selection.train_test_split(X, y, train_size=0.80, test_size=0.20)
 

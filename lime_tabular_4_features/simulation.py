@@ -118,7 +118,7 @@ def lime_app(train_X, train_y, test_X, test_y, black_pred_train_y, black_pred_te
 
     
 
-def test_generate_data():
+def test_generate_data(model):
 
     '''
     :param blackbox_model: 0 if RandomForest 1 if gradient boosting
@@ -126,7 +126,7 @@ def test_generate_data():
     '''    
 
     coefs = [[1,1,0,0], [0,1,1,0], [0,0,1,1], [1,0,0,1]]
-    pickle_path_model = os.path.join(os.getcwd()+'blackbox_trained_results.pickle')
+    pickle_path_model = os.path.join(os.getcwd()+'blackbox_{}_trained_results.pickle'.format('RF' if 0==model else 'GBT'))
     pickle_path_data =  os.path.join(os.getcwd()+'data.pickle')
 
     try:
@@ -142,7 +142,7 @@ def test_generate_data():
     except:
         print('no pickle file found, generating data instead')
         train_X, train_y, test_X, test_y = generate_data(5000, 4, coefs)
-        black_model = fit_blackmodel(train_X, train_y, test_X, test_y,0)
+        black_model = fit_blackmodel(train_X, train_y, test_X, test_y,model)
         f = open(pickle_path_model ,'wb')
         pickle.dump(black_model,f)
 

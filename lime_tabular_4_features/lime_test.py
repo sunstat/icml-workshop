@@ -32,9 +32,9 @@ def extract_feature_from_explanation(exp):
     
     return feature_list
 
-def do_explanation(data, iteration = 100):
+def do_explanation(data, model, iteration=100):
 
-    train_X, train_y, test_X, test_y,  black_model = simu.test_generate_data()
+    train_X, train_y, test_X, test_y,  black_model = simu.test_generate_data(model=model)
     explainer = lime.lime_tabular.LimeTabularExplainer(training_data=train_X, training_labels=train_y, feature_selection='lasso_path',
                                                        verbose=False, mode='classification', categorical_features=None, categorical_names=None)
     pred_y = black_model.predict(test_X)
@@ -47,7 +47,7 @@ def do_explanation(data, iteration = 100):
         res.append(curr_explanation)
     return res
 
-def plot_features_bar(features_dict, active_features):
+def plot_features_bar(features_dict, active_features, label, model, num_iters=100):
 
     color_list = []
     active_dict = dict()
@@ -61,14 +61,20 @@ def plot_features_bar(features_dict, active_features):
             color_list.append('black')
             other_dict[features_name] = features_dict[features_name]
     
-    
+    for key in active_dict:
+        active_dict[key] /= (1.0 * num_iters)
+    for key in other_dict:
+        other_dict[key] /= (1.0 * num_iters)   
+
     plt.bar(active_dict.keys(), active_dict.values(), color = 'red')
     plt.bar(other_dict.keys(), other_dict.values(), color = 'black')
-    plt.ylabel('Freq')
+    plt.ylabel('Probability')
     plt.xlabel('Features')
     plt.xticks([0, 1, 2, 3])
     plt.legend(feature_class, loc=1)
-    plt.show()  
+    plt.savefig('lime_tabular_4_features/figures/probability_bar/label{}_{}.png'.format(label, model))
+    plt.close()
+    #plt.show()  
 
 def determine_region(x):
 
@@ -86,9 +92,10 @@ def determine_region(x):
 
 if __name__ == "__main__":
     coefs = [[1,1,0,0], [0,1,1,0], [0,0,1,1], [1,0,0,1]]
-    data = np.array([-0.5, 0.5, 0.5, 0.5])
+    data = np.array([0.5, -0.5, 0.5, 0.5])
     label = determine_region(data)
-    explanation = do_explanation(data)
+    model='RF'
+    explanation = do_explanation(data, 0 if 'RF'==model else 1)
     features_list = []
     features_count = dict()
     for exp in explanation:
@@ -100,4 +107,4 @@ if __name__ == "__main__":
             features_count[feature] += 1
     print(features_count)
     active_features = set([i for i, value in enumerate(coefs[label]) if value])
-    plot_features_bar(features_count, active_features)
+    plot_features_bar(features_count, active_features, label=label, model=model, num_iters=100)
