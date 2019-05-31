@@ -41,7 +41,7 @@ def plot_features_bar(features_dict, active_features, model, label, num_iters, n
     for key in other_dict:
         other_dict[key] /= (1.0 * num_iters)
         other_dict_err[key] = (other_dict[key] * (1 - other_dict[key])) / num_iters   
-    error_kw = {'capsize': 2.0, 'ecolor': 'blue'}
+    #error_kw = {'capsize': 2.0, 'ecolor': 'blue'}
     plt.bar(active_dict.keys(), active_dict.values(), color = 'red', yerr=active_dict_err.values(), )
     plt.bar(other_dict.keys(), other_dict.values(), color = 'black', yerr=other_dict_err.values())
     plt.ylabel('Probability')

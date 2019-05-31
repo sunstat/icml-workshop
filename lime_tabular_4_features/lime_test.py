@@ -24,19 +24,29 @@ def extract_feature_from_explanation(exp):
     feature_list = []
     for e in exp:
         feature_str = e[0]
-        splitted = feature_str.split(' ')
-        if len(splitted) == 3:
-            feature_list.append(int(splitted[0]))
+        if len(feature_str) > 1:
+            splitted = feature_str.split(' ')
+            if len(splitted) == 3:
+                feature_list.append(int(splitted[0]))
+            else:
+                feature_list.append(int(splitted[2]))
         else:
-            feature_list.append(int(splitted[2]))
+            feature_list.append(int(feature_str))
     
     return feature_list
 
 def do_explanation(data, model, iteration=100):
 
     train_X, train_y, test_X, test_y,  black_model = simu.test_generate_data(model=model)
-    explainer = lime.lime_tabular.LimeTabularExplainer(training_data=train_X, training_labels=train_y, feature_selection='lasso_path',
-                                                       verbose=False, mode='classification', categorical_features=None, categorical_names=None)
+    explainer = lime.lime_tabular.LimeTabularExplainer(training_data=train_X,  
+                                                       training_labels=train_y, 
+                                                       feature_selection='lasso_path',
+                                                       discretize_continuous=False,
+                                                       sample_around_instance=True,
+                                                       verbose=False, 
+                                                       mode='classification', 
+                                                       categorical_features=None, 
+                                                       categorical_names=None)
     pred_y = black_model.predict(test_X)
     print("Accuracy:", metrics.accuracy_score(test_y, pred_y))
     res = []
